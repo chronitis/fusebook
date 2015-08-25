@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+
+import argparse
+import pathlib
+from fuse import FUSE
+
+from fusebook import FuseNotebookDir
+
+parser = argparse.ArgumentParser(description="FUSE filesystem for IPython/Jupyter notebooks")
+parser.add_argument("-w", "--write", action="store_true", default=False,
+                    help="Enable write mode (currently does nothing)")
+parser.add_argument("notebookdir", help="Directory containing .ipynb notebooks")
+parser.add_argument("mountpoint", help="Mountpoint for FUSE filesystem")
+
+args = parser.parse_args()
+
+FUSE(FuseNotebookDir(args.notebookdir, rw=args.write), args.mountpoint,
+     nothreads=True, foreground=True)
